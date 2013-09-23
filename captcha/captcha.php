@@ -35,13 +35,18 @@
 
 session_start();
 
-define('TYPO3_MODE', 'FE');
 define('PATH_this', dirname(__FILE__).'/');
 define('PATH_site', dirname(dirname(dirname(dirname(dirname(__FILE__))))).'/');
-define('PATH_typo3conf', PATH_site.'typo3conf/');
 
-require_once(PATH_site.'typo3/sysext/core/Classes/Configuration/ConfigurationManager.php');
-$localConfiguration = TYPO3\CMS\Core\Configuration\ConfigurationManager::getLocalConfiguration();
+require PATH_site . 'typo3/sysext/core/Classes/Core/Bootstrap.php';
+
+$instance = \TYPO3\CMS\Core\Core\Bootstrap::getInstance()
+	->baseSetup('typo3/typo3conf/ext/captcha/captcha/');
+
+$configurationManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Configuration\\ConfigurationManager');
+
+$localConfiguration = $configurationManager->getLocalConfiguration();
+
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['captcha'] = unserialize($localConfiguration['EXT']['extConf']['captcha']); 
 
 function typo3_distortString($img, $text, $tcolor, $bcolor, $angle, $diffx, $diffy, $xpos, $ypos, $letterSpacing, $bold, $fontSize, $fontFile, $useTTF = 0)	{
